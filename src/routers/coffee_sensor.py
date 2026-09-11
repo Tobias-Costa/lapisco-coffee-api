@@ -40,6 +40,8 @@ async def atualizar_peso(payload: PesoInput, db: AsyncSession = Depends(get_db))
     estado = await obter_estado_atual(db)
     estado.peso_gramas = payload.peso_gramas
     await db.flush()
+    # Atualiza o banco de dados com estado e retorna o valor atual
+    await db.refresh(estado) 
     
     # Gera a atualização na hora
     await empurrar_para_stream(estado)
@@ -50,6 +52,8 @@ async def atualizar_status(payload: StatusInput, db: AsyncSession = Depends(get_
     estado = await obter_estado_atual(db)
     estado.esta_fazendo = payload.esta_fazendo
     await db.flush()
+    # Atualiza o banco de dados com estado e retorna o valor atual
+    await db.refresh(estado) 
     await empurrar_para_stream(estado)
     return {"message": "Status de preparo atualizado"}
 
